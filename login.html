@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+<div class="login-box">
+    <h2>Login</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+
+    <button onclick="login()">Entrar</button>
+</div>
+
+<script>
+function login() {
+    const payload = {
+        email: document.getElementById("email").value,
+        senha: document.getElementById("senha").value
+    };
+
+    fetch("http://localhost/pagamentoRede/db/queries/usuario/login.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.text())
+    .then(texto => {
+        console.log("Resposta do servidor:", texto);
+
+        if (!texto || !texto.trim()) {
+            throw new Error("Resposta vazia do servidor");
+        }
+
+        const data = JSON.parse(texto);
+
+        if (data.status === "ok") {
+            alert("Login realizado com sucesso!");
+            // window.location.href = "dashboard.html";
+        } else {
+            alert(data.mensagem || "Email ou senha inválidos");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Erro ao tentar logar");
+    });
+}
+</script>
+</body>
+</html>

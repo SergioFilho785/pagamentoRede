@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+</head>
+<body>
+
+<h2>Cadastro</h2>
+
+<label>Nome:</label><br>
+<input id="nome"><br><br>
+
+<label>Email:</label><br>
+<input id="email"><br><br>
+
+<label>Telefone:</label><br>
+<input id="telefone"><br><br>
+
+<label>Senha:</label><br>
+<input id="senha" type="password"><br><br>
+
+<button onclick="enviar()">Enviar</button>
+
+<script>
+function enviar() {
+    const payload = {
+        nome: document.getElementById("nome").value,
+        email: document.getElementById("email").value,
+        telefone: document.getElementById("telefone").value,
+        senha: document.getElementById("senha").value
+    };
+
+    fetch("http://localhost/pagamentoRede/db/queries/usuario/cadastrar.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.text()) // 🔑 AQUI é obrigatório
+    .then(texto => {
+        console.log("Resposta bruta do PHP:", texto);
+
+        if (!texto || typeof texto !== "string") {
+            throw new Error("Resposta inválida do servidor");
+        }
+
+        if (!texto.trim()) {
+            throw new Error("Servidor retornou vazio");
+        }
+
+        const data = JSON.parse(texto);
+
+        if (data.status === "ok") {
+            alert("Cadastro realizado com sucesso!");
+        } else {
+            alert(data.mensagem);
+        }
+    })
+    .catch(err => {
+        console.error("Erro:", err);
+        alert("Erro ao cadastrar");
+    });
+}
+</script>
+
+</body>
+</html>
