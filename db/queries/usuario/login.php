@@ -2,8 +2,13 @@
 
 require __DIR__ . '/../../conexao.php';
 require __DIR__ . '/../../../utils/gerarHash.php';
+require __DIR__ . '/../../../utils/jwt.php';
+require __DIR__ . '/../../../utils/refreshToken.php';
+require __DIR__ . '/../token/salvarRefreshToken.php';
 
 $sql = "SELECT id, nome, senha_hash FROM usuarios WHERE email = ?";
+$cred = require __DIR__ . '/../../../config/credenciais.php';
+$validadeToken = 900;
 
 try {
 
@@ -44,9 +49,25 @@ try {
         exit;
     }
 
+    //GERA O JWT E O REFRESH TOKEN
+    $jwt = gerarJWT(
+        ["uid" => $usuario["id"]],
+        $cred["jwtSecret"],
+        $validadeToken // 15 minutos
+    );
+
+    $refreshToken = gerarRefreshToken();
+    $refreshHash  = hashRefreshToken($refreshToken);   
+
+    $respostaRefreshToken = salvarRefreshToken($conn, $usuario["id"], $refreshHash);
+
+    //RESPOSTA
     echo json_encode([
         "status" => "ok",
         "mensagem" => "Login realizado com sucesso!",
+        "access_token" => $jwt,
+        "refresh_token" => $refreshToken,
+        "validade" => $validadeToken,
         "usuario" => [
             "id"   => $usuario["id"],
             "nome" => $usuario["nome"]

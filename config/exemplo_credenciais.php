@@ -9,5 +9,6 @@ return [
     "urlDatabase" => "ENDEREÇO_DO_SEU_BANCO",
     "userDatabase" => "USUARIO_DO_SEU_BANCO",
     "senhaDatabase" => "SENHA_DO_SEU_BANCO",
-    "database" => "SEU_BANCO"
+    "database" => "SEU_BANCO",
+    "jwtSecret" => "SUA_CHAVE" //Execute o comando a seguir no terminal e copie a resposta: php -r "echo bin2hex(random_bytes(64)); "
 ];

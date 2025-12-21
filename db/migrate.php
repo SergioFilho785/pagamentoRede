@@ -14,5 +14,6 @@ echo "Executando migrations...\n";
 migration_create_usuarios($conn);
 migration_create_pedidos($conn);
 migration_create_itens_pedido($conn);
+migration_create_refresh_tokens($conn);
 
 echo "Finalizado.\n";
