@@ -8,7 +8,6 @@ require __DIR__ . '/../token/salvarRefreshToken.php';
 
 $sql = "SELECT id, nome, senha_hash FROM usuarios WHERE email = ?";
 $cred = require __DIR__ . '/../../../config/credenciais.php';
-$validadeToken = 900;
 
 try {
 
@@ -53,7 +52,7 @@ try {
     $jwt = gerarJWT(
         ["uid" => $usuario["id"]],
         $cred["jwtSecret"],
-        $validadeToken // 15 minutos
+        (int) $cred["jwtValidade"], // 15 minutos
     );
 
     $refreshToken = gerarRefreshToken();
@@ -65,9 +64,9 @@ try {
     echo json_encode([
         "status" => "ok",
         "mensagem" => "Login realizado com sucesso!",
-        "access_token" => $jwt,
+        "access_token" => $jwt["jwt"],
+        "expires_at" => $jwt["expires_at"],
         "refresh_token" => $refreshToken,
-        "validade" => $validadeToken,
         "usuario" => [
             "id"   => $usuario["id"],
             "nome" => $usuario["nome"]

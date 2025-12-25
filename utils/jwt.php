@@ -25,5 +25,8 @@ function gerarJWT(array $payload, string $secret, int $expSegundos = 900) {
 
     $signatureEncoded = base64UrlEncode($signature);
 
-    return "$headerEncoded.$payloadEncoded.$signatureEncoded";
+    return [
+        "jwt" => $headerEncoded.$payloadEncoded.$signatureEncoded,
+        "expires_at" => $payload["exp"]
+    ];
 }
